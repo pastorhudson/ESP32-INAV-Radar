@@ -1,0 +1,35 @@
+name: Build ESP32-INAV-Radar and Upload Artifacts
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install PlatformIO
+        run: pip install platformio
+
+      - name: Build with PlatformIO
+        run: platformio run
+
+      - name: Upload firmware binaries as artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: firmware-binaries
+          path: |
+            .pio/build/**/firmware.bin
